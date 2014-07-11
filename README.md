@@ -1,4 +1,4 @@
 mei.js
 ======
 
-Simple pub/sub events system to support west.js (WebWorker Events System Test)
+Javascript component with pub/sub events system to support west.js (WebWorker Events System Test)
