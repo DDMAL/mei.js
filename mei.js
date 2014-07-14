@@ -6,10 +6,12 @@
 *      Re-adapted to vanilla Javascript
 *
 *      Copied from https://github.com/DDMAL/diva.js/blob/develop/source/js/utils.js
+*      and adapted to accept arguments on subscription
 *
 */
 var mei = (function() {
     var cache = {};
+    var argsCache = {};
     var pub = {
         Events: {
             /**
@@ -29,42 +31,51 @@ var mei = (function() {
                     var thisTopic = cache[topic],
                         i = thisTopic.length;
 
+                    var thisTopicArgs = argsCache[topic];
+
                     while (i--)
-                        thisTopic[i].apply( scope || this, args || []);
+                        thisTopic[i].apply( scope || this, args || thisTopicArgs[i] || []);
                 }
             },
             /**
              *      Events.subscribe
-             *      e.g.: Events.subscribe("PageDidLoad", highlight)
+             *      e.g.: var handle = mei.Events.subscribe("HelloEvent", createBoxWorker, [2, 'hello']);
              *
              *      @class Events
              *      @method subscribe
              *      @param topic {String}
              *      @param callback {Function}
+             *      @param args {Array}
              *      @return Event handler {Array}
              */
-            subscribe: function (topic, callback)
+            subscribe: function (topic, callback, args)
             {
                 if (!cache[topic])
                     cache[topic] = [];
 
+                if (!argsCache[topic])
+                    argsCache[topic] = [];
+
                 cache[topic].push(callback);
-                return [topic, callback];
+                argsCache[topic].push(args || []);
+                return [topic, callback, args];
             },
             /**
              *      Events.unsubscribe
-             *      e.g.: var handle = Events.subscribe("PageDidLoad", highlight);
-             *              Events.unsubscribe(handle);
+             *      e.g.: var handle = mei.Events.subscribe("HelloEvent", createBoxWorker, [2, 'hello']);
+             *              mei.Events.unsubscribe(handle);
              *
              *      @class Events
              *      @method unsubscribe
              *      @param handle {Array}
+             *      @param args {Array}
              *      @param completely {Boolean}
              */
             unsubscribe: function (handle, completely)
             {
                 var t = handle[0],
-                    i = cache[t].length;
+                    i = cache[t].length,
+                    a = handle[2];
 
                 if (cache[t])
                 {
@@ -72,6 +83,13 @@ var mei = (function() {
                     {
                         if (cache[t][i] === handle[1])
                         {
+                            if (argsCache[t][i].length && (argsCache[t][i][0] === a[0] && argsCache[t][i][1] === a[1]))
+                            {
+                                argsCache[t].splice(argsCache[t][i], 1);
+                                if (completely)
+                                    delete argsCache[t];
+                            }
+
                             cache[t].splice(cache[t][i], 1);
                             if (completely)
                                 delete cache[t];
