@@ -94,10 +94,6 @@ var mei = (function() {
                         }
                     }
                 }
-            },
-            printcaches: function() {
-                console.log('argscache - ', argsCache);
-                console.log('cache - ', cache);
             }
         }
     };
