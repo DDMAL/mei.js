@@ -73,6 +73,7 @@ var mei = (function() {
              */
             unsubscribe: function (handle, completely)
             {
+                console.log('unsubscribe called for ', handle);
                 var t = handle[0],
                     i = cache[t].length,
                     a = handle[2];
@@ -83,12 +84,9 @@ var mei = (function() {
                     {
                         if (cache[t][i] === handle[1])
                         {
-                            if (argsCache[t][i].length && (argsCache[t][i][0] === a[0] && argsCache[t][i][1] === a[1]))
-                            {
-                                argsCache[t].splice(i, 1);
-                                if (completely)
-                                    delete argsCache[t];
-                            }
+                            argsCache[t].splice(i, 1);
+                            if (completely)
+                                delete argsCache[t];
 
                             cache[t].splice(i, 1);
                             if (completely)
@@ -96,6 +94,10 @@ var mei = (function() {
                         }
                     }
                 }
+            },
+            printcaches: function() {
+                console.log('argscache - ', argsCache);
+                console.log('cache - ', cache);
             }
         }
     };
