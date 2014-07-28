@@ -85,12 +85,12 @@ var mei = (function() {
                         {
                             if (argsCache[t][i].length && (argsCache[t][i][0] === a[0] && argsCache[t][i][1] === a[1]))
                             {
-                                argsCache[t].splice(argsCache[t][i], 1);
+                                argsCache[t].splice(i, 1);
                                 if (completely)
                                     delete argsCache[t];
                             }
 
-                            cache[t].splice(cache[t][i], 1);
+                            cache[t].splice(i, 1);
                             if (completely)
                                 delete cache[t];
                         }
