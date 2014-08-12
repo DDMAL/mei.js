@@ -73,7 +73,6 @@ var mei = (function() {
              */
             unsubscribe: function (handle, completely)
             {
-                console.log('unsubscribe called for ', handle);
                 var t = handle[0],
                     i = cache[t].length,
                     a = handle[2];
