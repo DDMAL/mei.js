@@ -68,9 +68,8 @@ var mei = (function() {
              *      @class Events
              *      @method unsubscribe
              *      @param handle {Array}
-             *      @param completely {Boolean}
              */
-            unsubscribe: function (handle, completely)
+            unsubscribe: function (handle)
             {
                 var t = handle[0],
                     a = handle[2];
@@ -83,12 +82,8 @@ var mei = (function() {
                         if (cache[t][i] === handle[1])
                         {
                             argsCache[t].splice(i, 1);
-                            if (completely)
-                                delete argsCache[t];
-
                             cache[t].splice(i, 1);
-                            if (completely)
-                                delete cache[t];
+
                             return true;
                         }
                     }
