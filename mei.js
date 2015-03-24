@@ -68,17 +68,16 @@ var mei = (function() {
              *      @class Events
              *      @method unsubscribe
              *      @param handle {Array}
-             *      @param args {Array}
              *      @param completely {Boolean}
              */
             unsubscribe: function (handle, completely)
             {
                 var t = handle[0],
-                    i = cache[t].length,
                     a = handle[2];
 
                 if (cache[t])
                 {
+                    var i = cache[t].length;
                     while (i--)
                     {
                         if (cache[t][i] === handle[1])
@@ -90,9 +89,11 @@ var mei = (function() {
                             cache[t].splice(i, 1);
                             if (completely)
                                 delete cache[t];
+                            return true;
                         }
                     }
                 }
+                return false;
             }
         }
     };
