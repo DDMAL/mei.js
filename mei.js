@@ -16,10 +16,11 @@ var mei = (function() {
         Events: {
             /**
              *      Events.publish
-             *      e.g.: Events.publish("PageDidLoad", [pageIndex, filename, pageSelector], this);
+             *      e.g.: Events.publish('global', "PageDidLoad", [pageIndex, filename, pageSelector], this);
              *
              *      @class Events
              *      @method publish
+             *      @param channel {String}
              *      @param topic {String}
              *      @param args     {Array}
              *      @param scope {Object} Optional
@@ -42,10 +43,11 @@ var mei = (function() {
             },
             /**
              *      Events.subscribe
-             *      e.g.: var handle = mei.Events.subscribe("HelloEvent", createBoxWorker, [2, 'hello']);
+             *      e.g.: var handle = mei.Events.subscribe('global', "HelloEvent", createBoxWorker, [2, 'hello']);
              *
              *      @class Events
              *      @method subscribe
+             *      @param channel {String}
              *      @param topic {String}
              *      @param callback {Function}
              *      @param args {Array}
@@ -72,7 +74,7 @@ var mei = (function() {
             },
             /**
              *      Events.unsubscribe
-             *      e.g.: var handle = mei.Events.subscribe("HelloEvent", createBoxWorker, [2, 'hello']);
+             *      e.g.: var handle = mei.Events.subscribe('global', "HelloEvent", createBoxWorker, [2, 'hello']);
              *              mei.Events.unsubscribe(handle);
              *
              *      @class Events
