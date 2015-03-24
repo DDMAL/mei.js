@@ -24,17 +24,20 @@ var mei = (function() {
              *      @param args     {Array}
              *      @param scope {Object} Optional
              */
-            publish: function (topic, args, scope)
+            publish: function (channel, topic, args, scope)
             {
                 if (cache[topic])
                 {
                     var thisTopic = cache[topic],
-                        i = thisTopic.length;
+                        thisChannel = thisTopic[channel],
+                        i = thisChannel.length;
 
-                    var thisTopicArgs = argsCache[topic];
+                    var thisChannelArgs = argsCache[topic][channel];
 
                     while (i--)
-                        thisTopic[i].apply( scope || this, args || thisTopicArgs[i] || []);
+                    {
+                        thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
+                    }
                 }
             },
             /**
@@ -48,17 +51,24 @@ var mei = (function() {
              *      @param args {Array}
              *      @return Event handler {Array}
              */
-            subscribe: function (topic, callback, args)
+            subscribe: function (channel, topic, callback, args)
             {
                 if (!cache[topic])
-                    cache[topic] = [];
+                {
+                    cache[topic] = {};
+                    cache[topic][channel] = []
+                }
 
                 if (!argsCache[topic])
-                    argsCache[topic] = [];
+                {
+                    argsCache[topic] = {};
+                    argsCache[topic][channel] = []
+                }
 
-                cache[topic].push(callback);
-                argsCache[topic].push(args || []);
-                return [topic, callback, args];
+                cache[topic][channel].push(callback);
+                argsCache[topic][channel].push(args || []);
+
+                return [channel, topic, callback, args];
             },
             /**
              *      Events.unsubscribe
@@ -71,24 +81,38 @@ var mei = (function() {
              */
             unsubscribe: function (handle)
             {
-                var t = handle[0],
-                    a = handle[2];
+                var c = handle[0],
+                    t = handle[1],
+                    f = handle[2],
+                    a = handle[3];
 
                 if (cache[t])
                 {
-                    var i = cache[t].length;
+                    var i = cache[t][c].length;
                     while (i--)
                     {
-                        if (cache[t][i] === handle[1])
+                        if (cache[t][c][i] === f)
                         {
-                            argsCache[t].splice(i, 1);
-                            cache[t].splice(i, 1);
+                            argsCache[t][c].splice(i, 1);
+                            cache[t][c].splice(i, 1);
 
                             return true;
                         }
                     }
                 }
                 return false;
+            },
+
+            /**
+             *      diva.Events.unsubscribeAll
+             *      e.g.: diva.Events.unsubscribeAll();
+             *
+             *      @class Events
+             *      @method unsubscribe
+             */
+            unsubscribeAll: function ()
+            {
+                cache = {};
             }
         }
     };
