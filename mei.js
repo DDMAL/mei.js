@@ -45,14 +45,20 @@ var mei = (function() {
                         }
                     };
                     
-                    if(channel === 'global') {
+                    if(channel === 'global')
+                    {
                         
                         // go through all channels
-                        for(c in cache[topic]) {
-                            func(topic, c, scope);
+                        var channels = Object.keys(cache[topic]),
+                            i = channels.length;
+                        while (i--)
+                        {
+                            func(topic, channels[i], scope);
                         }
                         
-                    }else {
+                    }
+                    else
+                    {
                         func(topic, channel, scope);
                     }                    
                 }
