@@ -29,8 +29,6 @@ var mei = (function() {
             {
                 if (cache[topic])
                 {
-                
-                    
                     var func = function(topic, channel, scope) {
                         
                         var thisTopic = cache[topic];
@@ -47,15 +45,14 @@ var mei = (function() {
                     
                     if(channel === 'global')
                     {
-                        
                         // go through all channels
                         var channels = Object.keys(cache[topic]),
                             i = channels.length;
+                            
                         while (i--)
                         {
                             func(topic, channels[i], scope);
                         }
-                        
                     }
                     else
                     {
