@@ -29,21 +29,37 @@ var mei = (function() {
             {
                 if (cache[topic])
                 {
-                    var thisTopic = cache[topic],
-                        thisChannel = thisTopic[channel],
-                        i = thisChannel.length;
-
-                    var thisChannelArgs = argsCache[topic][channel];
-
-                    while (i--)
-                    {
-                        thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
-                    }
+                
+                    
+                    var func = function(topic, channel, scope) {
+                        
+                        var thisTopic = cache[topic];
+                        var thisChannel = thisTopic[channel],
+                            i = thisChannel.length;
+    
+                        var thisChannelArgs = argsCache[topic][channel];
+    
+                        while (i--)
+                        {
+                            thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
+                        }
+                    };
+                    
+                    if(channel === 'global') {
+                        
+                        // go through all channels
+                        for(c in cache[topic]) {
+                            func(topic, c, scope);
+                        }
+                        
+                    }else {
+                        func(topic, channel, scope);
+                    }                    
                 }
             },
             /**
              *      Events.subscribe
-             *      e.g.: var handle = mei.Events.subscribe('global', "HelloEvent", createBoxWorker, [2, 'hello']);
+             *      e.g.: var handle = mei.Events.subscribe('west', "HelloEvent", createBoxWorker, [2, 'hello']);
              *
              *      @class Events
              *      @method subscribe
