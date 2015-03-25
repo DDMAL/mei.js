@@ -67,12 +67,12 @@ var mei = (function() {
 
                 if (!cache[topic][channel])
                 {
-                    cache[topic][channel] = []
+                    cache[topic][channel] = [];
                 }
 
                 if (!argsCache[topic][channel])
                 {
-                    argsCache[topic][channel] = []
+                    argsCache[topic][channel] = [];
                 }
 
                 cache[topic][channel].push(callback);
