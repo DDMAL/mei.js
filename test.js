@@ -53,24 +53,33 @@
     
     //// Test fallback event
     
-    var fallbackEventCalled = false;
+    var fallbackEventCalled1 = false;
+    var fallbackEventCalled2 = false;
     var specificEventCalled = false;
-    var testFallbackEvent = function()
+    var testFallbackEvent1 = function()
     {
-        fallbackEventCalled = true;
-        console.log('Test Fallback Event');
+        fallbackEventCalled1 = true;
+        console.log('Test Fallback Event 1');
+    }
+    var testFallbackEvent2 = function()
+    {
+        fallbackEventCalled2 = true;
+        console.log('Test Fallback Event 2');
     }
     var testSpecificEvent = function()
     {
         specificEventCalled = true;
         console.log('Test Specific Event');
     }
-    var ret1 = mei.Events.subscribe('fallback', 'TestFallbackEvent', testFallbackEvent);
-    var ret2 = mei.Events.subscribe('specific', 'TestSpecificEvent', testSpecificEvent);
-    assert(fallbackEventCalled === false, 'fallback event should be false');
+    var ret1 = mei.Events.subscribe('fallback', 'TestFallbackEvent', testFallbackEvent1);
+    var ret2 = mei.Events.subscribe('specific', 'TestFallbackEvent', testFallbackEvent2);
+    var ret3 = mei.Events.subscribe('specific', 'TestSpecificEvent', testSpecificEvent);
+    assert(fallbackEventCalled1 === false, 'fallback event 1 should be false');
+    assert(fallbackEventCalled2 === false, 'fallback event 2 should be false');
     assert(specificEventCalled === false, 'specific event should be false');
-    mei.Events.publish('global', {'TestSpecificEvent': [], 'TestFallbackEvent': []});
-    assert(fallbackEventCalled === true, 'fallback event should be true');
+    mei.Events.publish('global', ['TestSpecificEvent', 'TestFallbackEvent'], [[], []]);
+    assert(fallbackEventCalled1 === true, 'fallback event 1 should be true');
+    assert(fallbackEventCalled2 === false, 'fallback event 2 should still be false');
     assert(specificEventCalled === true, 'specific event should be true');
     
     
