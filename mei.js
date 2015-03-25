@@ -58,12 +58,20 @@ var mei = (function() {
                 if (!cache[topic])
                 {
                     cache[topic] = {};
-                    cache[topic][channel] = []
                 }
 
                 if (!argsCache[topic])
                 {
                     argsCache[topic] = {};
+                }
+
+                if (!cache[topic][channel])
+                {
+                    cache[topic][channel] = []
+                }
+
+                if (!argsCache[topic][channel])
+                {
                     argsCache[topic][channel] = []
                 }
 
@@ -115,6 +123,7 @@ var mei = (function() {
             unsubscribeAll: function ()
             {
                 cache = {};
+                argsCache = {};
             }
         }
     };
