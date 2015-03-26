@@ -17,47 +17,71 @@ var mei = (function() {
             /**
              *      Events.publish
              *      e.g.: Events.publish('global', "PageDidLoad", [pageIndex, filename, pageSelector], this);
+             *      e.g.: Events.publish('global', ["ElementModified", "XMLModified"], [[elementId, oldValue, newValue], []], this);
              *
              *      @class Events
              *      @method publish
              *      @param channel {String}
-             *      @param topic {String}
+             *      @param topic {String} or {Array}
              *      @param args     {Array}
              *      @param scope {Object} Optional
              */
             publish: function (channel, topic, args, scope)
             {
-                if (cache[topic])
+                if (Object.prototype.toString.call(topic) !== "[object Array]")
                 {
-                    var func = function(topic, channel, scope) {
-                        
-                        var thisTopic = cache[topic];
-                        var thisChannel = thisTopic[channel],
-                            i = thisChannel.length;
-    
-                        var thisChannelArgs = argsCache[topic][channel];
-    
-                        while (i--)
-                        {
-                            thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
-                        }
-                    };
+                    topic = [topic];
+                    args = [args];
+                }
+
+                var channelsServed = {};
                     
-                    if(channel === 'global')
+                for(var m = 0; m < topic.length; m++)
+                {
+                    
+                    if (cache[topic[m]])
                     {
-                        // go through all channels
-                        var channels = Object.keys(cache[topic]),
-                            i = channels.length;
+                        var func = function(topic, channel, scope) {
                             
-                        while (i--)
+                            var thisTopic = cache[topic];
+                            var thisChannel = thisTopic[channel],
+                                i = thisChannel.length;
+        
+                            var thisChannelArgs = argsCache[topic][channel];
+        
+                            while (i--)
+                            {
+                                thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
+                            }
+                        };
+                        
+                        if(channel === 'global')
                         {
-                            func(topic, channels[i], scope);
+                            // go through all channels
+                            var channels = Object.keys(cache[topic[m]]),
+                                i = channels.length;
+                                
+                            while (i--)
+                            {
+                                if(typeof channelsServed[channels[i]] === 'undefined')
+                                {
+                                    channelsServed[channels[i]] = null;
+                                    func(topic[m], channels[i], scope);
+                                }
+                            }
                         }
+                        else
+                        {
+                            if(typeof channelsServed[channel] === 'undefined')
+                            {
+                                if(cache[topic[m]][channel])
+                                {
+                                    channelsServed[channel] = null;
+                                    func(topic[m], channel, scope);
+                                }
+                            }
+                        }                    
                     }
-                    else
-                    {
-                        func(topic, channel, scope);
-                    }                    
                 }
             },
             /**

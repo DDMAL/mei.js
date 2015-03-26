@@ -11,7 +11,7 @@
         }
     }
 
-    ////
+    //// Test global channel
 
     var globalChannelCalled1 = false;
     var globalChannelCalled2 = false;
@@ -33,7 +33,7 @@
     assert(globalChannelCalled1 === true, 'global channel 1 should be true');
     assert(globalChannelCalled2 === true, 'global channel 2 should be true');
 
-    ///
+    //// Test component channel
 
     var componentChannelCalled = false;
     var testComponentChannel = function()
@@ -50,5 +50,37 @@
     mei.Events.unsubscribe(sub);
     mei.Events.publish('verovio', 'TestComponentChannel');
     assert(componentChannelCalled === false, 'component channel should be false after unsubscribe');
+    
+    //// Test fallback event
+    
+    var fallbackEventCalled1 = false;
+    var fallbackEventCalled2 = false;
+    var specificEventCalled = false;
+    var testFallbackEvent1 = function()
+    {
+        fallbackEventCalled1 = true;
+        console.log('Test Fallback Event 1');
+    }
+    var testFallbackEvent2 = function()
+    {
+        fallbackEventCalled2 = true;
+        console.log('Test Fallback Event 2');
+    }
+    var testSpecificEvent = function()
+    {
+        specificEventCalled = true;
+        console.log('Test Specific Event');
+    }
+    var ret1 = mei.Events.subscribe('fallback', 'TestFallbackEvent', testFallbackEvent1);
+    var ret2 = mei.Events.subscribe('specific', 'TestFallbackEvent', testFallbackEvent2);
+    var ret3 = mei.Events.subscribe('specific', 'TestSpecificEvent', testSpecificEvent);
+    assert(fallbackEventCalled1 === false, 'fallback event 1 should be false');
+    assert(fallbackEventCalled2 === false, 'fallback event 2 should be false');
+    assert(specificEventCalled === false, 'specific event should be false');
+    mei.Events.publish('global', ['TestSpecificEvent', 'TestFallbackEvent'], [[], []]);
+    assert(fallbackEventCalled1 === true, 'fallback event 1 should be true');
+    assert(fallbackEventCalled2 === false, 'fallback event 2 should still be false');
+    assert(specificEventCalled === true, 'specific event should be true');
+    
     
 })();
