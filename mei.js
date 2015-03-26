@@ -23,33 +23,76 @@ var mei = (function() {
             /**
              *      Events.publish
              *      e.g.: Events.publish('global', "PageDidLoad", [pageIndex, filename, pageSelector], this);
+             *      e.g.: Events.publish('global', ["ElementModified", "XMLModified"], [[elementId, oldValue, newValue], []], this);
              *
              *      @class Events
              *      @method publish
              *      @param channel {String}
-             *      @param topic {String}
+             *      @param topic {String} or {Array}
              *      @param args     {Array}
              *      @param scope {Object} Optional
              */
             publish: function (channel, topic, args, scope)
             {
-                if (cache[topic])
+                if (Object.prototype.toString.call(topic) !== "[object Array]")
                 {
-                    var thisTopic = cache[topic],
-                        thisChannel = thisTopic[channel],
-                        i = thisChannel.length;
+                    topic = [topic];
+                    args = [args];
+                }
 
-                    var thisChannelArgs = argsCache[topic][channel];
-
-                    while (i--)
+                var channelsServed = {};
+                    
+                for(var m = 0; m < topic.length; m++)
+                {
+                    
+                    if (cache[topic[m]])
                     {
-                        thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
+                        var func = function(topic, channel, scope) {
+                            
+                            var thisTopic = cache[topic];
+                            var thisChannel = thisTopic[channel],
+                                i = thisChannel.length;
+        
+                            var thisChannelArgs = argsCache[topic][channel];
+        
+                            while (i--)
+                            {
+                                thisChannel[i].apply( scope || this, args || thisChannelArgs[i] || []);
+                            }
+                        };
+                        
+                        if(channel === 'global')
+                        {
+                            // go through all channels
+                            var channels = Object.keys(cache[topic[m]]),
+                                i = channels.length;
+                                
+                            while (i--)
+                            {
+                                if(typeof channelsServed[channels[i]] === 'undefined')
+                                {
+                                    channelsServed[channels[i]] = null;
+                                    func(topic[m], channels[i], scope);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(typeof channelsServed[channel] === 'undefined')
+                            {
+                                if(cache[topic[m]][channel])
+                                {
+                                    channelsServed[channel] = null;
+                                    func(topic[m], channel, scope);
+                                }
+                            }
+                        }                    
                     }
                 }
             },
             /**
              *      Events.subscribe
-             *      e.g.: var handle = mei.Events.subscribe('global', "HelloEvent", createBoxWorker, [2, 'hello']);
+             *      e.g.: var handle = mei.Events.subscribe('west', "HelloEvent", createBoxWorker, [2, 'hello']);
              *
              *      @class Events
              *      @method subscribe
