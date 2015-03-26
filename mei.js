@@ -13,6 +13,12 @@ var mei = (function() {
     var cache = {};
     var argsCache = {};
     var pub = {
+        Storage: {
+            stuff: function()
+            {
+            }
+        },
+
         Events: {
             /**
              *      Events.publish
