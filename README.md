@@ -1,6 +1,26 @@
 mei.js
 ======
 
+Installation
+============
+
+Clone the repository:
+
+    git clone https://github.com/DDMAL/mei.js
+
+If you are developing the library you should install the testing frameworks:
+
+    npm install
+
+If you do not have the 'karma' test runner installed globally, you can install it globally and it will then be available to run from the command line:
+
+    npm install -g karma
+
+To run the unit tests:
+
+    karma start
+
+
 Event System
 ============
 
