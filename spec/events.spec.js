@@ -52,6 +52,19 @@ describe('MEI', function()
             expect(callback.callCount).toBe(1);
         });
 
+        it('should unsubscribe all listeners', function()
+        {
+            var sub1 = mei.Events.subscribe('global', 'TestGlobalChannel', callback, []);
+            var sub2 = mei.Events.subscribe('specific', 'TestSpecificChannel', callback, []);
+
+            mei.Events.unsubscribeAll();
+
+            mei.Events.publish('global', ['TestGlobalChannel'], [], this);
+            mei.Events.publish('specific', ['TestSpecificChannel'], [], this);
+
+            expect(callback.called).toBe(false);
+        });
+
         it('should not trigger a callback on a specific channel', function()
         {
             var sub = mei.Events.subscribe('global', 'TestSpecificChannel', callback, []);
@@ -131,4 +144,6 @@ describe('MEI', function()
             mei.Events.publish('global', ['TestSpecificEvent', 'TestFallbackEvent'], [[], []], this);
         });
     });
+
+
 });
