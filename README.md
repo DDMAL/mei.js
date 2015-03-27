@@ -67,9 +67,3 @@ Example:
     mei.Events.unsubscribe(myHandle);
 
 This will stop `mycomponent` from responding to any further `NoteDidChange` messages.
-
-
-
-
-
-

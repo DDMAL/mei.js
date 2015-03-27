@@ -28,8 +28,8 @@ var mei = (function() {
              *      @class Events
              *      @method publish
              *      @param channel {String}
-             *      @param topic {String} or {Array}
-             *      @param args     {Array}
+             *      @param topic {Array}
+             *      @param args  {Array}
              *      @param scope {Object} Optional
              */
             publish: function (channel, topic, args, scope)
@@ -42,7 +42,7 @@ var mei = (function() {
 
                 var channelsServed = {};
                     
-                for(var m = 0; m < topic.length; m++)
+                for (var m = 0; m < topic.length; m++)
                 {
                     
                     if (cache[topic[m]])
